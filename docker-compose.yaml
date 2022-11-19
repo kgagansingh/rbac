@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  rbac:
+    # If image present the load image else build
+    # if build also doesn't exist.
+    # image:
+    container_name: rbac
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rbac_db
+#      - rbac_redis
+    environment:
+#      - DATA_SOURCE_URL=mongodb://root:root%40123@rbac_db:27017/
+      - DATA_SOURCE_URL=jdbc:postgresql://rbac_db:5432/rbac?useSSL=false
+      - JWT_SECRET_KEY
+      - JWT_TOKEN_TTL
+      - POSTGRES_DB_DOCKER_PORT
+      - POSTGRES_DB_USERNAME=postgres
+      - POSTGRES_DB_PASSWORD=root
+#      - POSTGRES_DB_DATABASE
+#      - REDIS_HOST
+#      - REDIS_PORT
+#      - REDIS_CACHE_TTL
+
+  rbac_db:
+    container_name: rbac_db
+    image: postgres:latest
+    volumes:
+      - rbac_volume:/data/db
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+#      MONGO_INITDB_ROOT_PASSWORD: root@123
+#      MONGO_INITDB_DATABASE: rbac
+
+#  rbac_redis:
+#    container_name: rbac_cache
+#    image: redis
+#    volumes:
+#      - rbac_volume:/data/cache
+#    ports:
+#      - "6379:6379"
+
+volumes:
+  rbac_volume:
