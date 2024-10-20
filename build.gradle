@@ -48,4 +48,3 @@ application {
 tasks.named('test') {
     useJUnitPlatform()
 }
-nmsbfha
